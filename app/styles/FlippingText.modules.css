@@ -1,0 +1,9 @@
+.container {
+    font-size: 2rem;
+    font-family: monospace;
+    padding: 20px;
+    background-color: #000;
+    color: #fff;
+    display: inline-block;
+  }
+  
