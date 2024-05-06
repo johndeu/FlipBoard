@@ -38,8 +38,6 @@ const Flipboard = ({ text }) => {
   };
   
   
-    
-  // Function to create flip effect by changing characters over time
  // Function to create flip effect by changing characters over time
 const flipText = (inputText) => {
   let delay = 550; // Adjust the delay as needed (e.g., 50 milliseconds)
@@ -59,19 +57,17 @@ const flipText = (inputText) => {
           setFlippedText((prevText) => {
             const newText = [...prevText];
             const nextChar = stepArray[stepIndex + 1] ? stepArray[stepIndex + 1] : stepChar;
-            newText[index] = { char: <Step key={generateUniqueKey()} char={stepChar} />, nextChar: <Step key={generateUniqueKey()} char={nextChar} />, flippingTop: true, flippingBottom: false };
+            newText[index] = { char: <Step char={stepChar} />, nextChar: <Step char={nextChar} />, flippingTop: true, flippingBottom: false };
             return newText;
           });
-          if (stepIndex === steps.length - 1) {  // Check to see if the animation for this split-flap is complete and set it's flipping state to false
-            setTimeout(() => { 
-              setFlippedText((prevText) => {
-                const newText = [...prevText];
-                newText[index] = { char: stepChar, nextChar: '', flippingTop: false, flippingBottom: true };
-                return newText;
-              });
-            }, delay);
-          }
-        }, index * totalDuration + (stepIndex * totalDuration) / steps.length);
+          setTimeout(() => { 
+            setFlippedText((prevText) => {
+              const newText = [...prevText];
+              newText[index] = { char: stepChar, nextChar: '', flippingTop: false, flippingBottom: false };
+              return newText;
+            });
+          }, delay);
+        }, index * totalDuration + (stepIndex * totalDuration) / steps.length);   
       });
     }
   });
@@ -85,15 +81,16 @@ const flipText = (inputText) => {
 
   return (
     <div className="flipboard">
-    {flippedText.map((item, index) => (
-      <div key={item.key} className={`flipboard-char ${item.flipping ? 'flipping' : ''}`}>
-        <div className="char-top-half">{item.char || '\u00A0'}</div>
-        <div className="char-bottom-half">{item.nextChar || '\u00A0'}</div>
-      </div>
-    ))}
-  </div>
-  
+      {flippedText.map((item, index) => (
+        <div key={item.key} className="flipboard-char">
+          <div className={`char-top-half ${item.flippingTop ? 'flippingTop' : ''}`}>{item.char || '\u00A0'}</div>
+          <div className={`char-bottom-half ${item.flippingBottom ? 'flippingBottom' : ''}`}>{item.nextChar || '\u00A0'}</div>
+        </div>
+      ))}
+    </div>
   );
+  
+  
 };
 
 export default Flipboard;
