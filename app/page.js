@@ -6,7 +6,7 @@ export default function Home() {
         <div>
             <client>
                 <div>
-                    <FlipBoard text="Hello"></FlipBoard>
+                    <FlipBoard text="HelloWorld"></FlipBoard>
                 </div>
             </client>
         </div>

@@ -40,7 +40,7 @@ const Flipboard = ({ text }) => {
 
   // Function to create flip effect by changing characters over time
   const flipText = (inputText) => {
-    let delay = 2000; // Adjust the delay as needed (e.g., 50 milliseconds)
+    let delay = 100; // Adjust the delay as needed (e.g., 50 milliseconds)
     let totalDuration = inputText.replace(/[^A-Za-z]/g, '').length * delay;
   
     inputText.split('').forEach((char, index) => {
@@ -67,7 +67,7 @@ const Flipboard = ({ text }) => {
                 return newText;
               });
             }, delay);
-          }, index * totalDuration + (stepIndex * totalDuration) / steps.length);
+          }, index * totalDuration + (stepIndex * totalDuration) / steps.length );
         });
       }
     });
@@ -78,7 +78,7 @@ const Flipboard = ({ text }) => {
 
   useEffect(() => {
     // Initialize flippedText with the entire input text
-    setFlippedText(text.split('').map((char, index) => ({ char: ' ', flipping: false, key: generateUniqueKey() })));
+    setFlippedText(text.split('').map((char, index) => ({ char: ' ', flippingTop: false, flippingBottom: false, key: generateUniqueKey() })));
     flipText(text);
   }, [text]);
 
