@@ -2,85 +2,84 @@
 .flipboard {
     display: flex;
     flex-direction: row;
-    font-size: 3em;
+    font-size: 5em;
     justify-content: flex-start;
 }
 
 .flipboard-char {
     position: relative;
-    perspective: 300px;
+    width: .8em;
+    overflow: hidden;
 }
 
 .char-top-half {
     position: absolute;
+    perspective: 300px;
     text-align: left;
     line-height: 1;
-    width:3em;
+    width: 100%;
     color: white;
-    background-color: transparent;
-    backface-visibility: hidden;
-    -webkit-clip-path: polygon( 0% 0%, 100% 0%, 100% 50%, 0% 50%);
+    -webkit-clip-path: polygon(0% 0%, 100% 0%, 100% 50%, 0% 50%);
     clip-path: polygon(0% 0%, 100% 0%, 100% 50%, 0% 50%);
 }
 
 /* Bottom half styles */
 .char-bottom-half {
     position: relative;
+    perspective: 300px;
     width: 100%;
-    top: -0.20em;
+    top: -0.22em;
     text-align: left;
     line-height: 1;
     color: white;
-    background-color: transparent;
-    backface-visibility: hidden;
-    -webkit-clip-path: polygon( 0% 50%, 100% 50%, 100% 100%, 0% 100%);
+    -webkit-clip-path: polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%);
     clip-path: polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%);
 }
 
 
-.flipboard-char.flippingTop .char-top-half {
-    animation: flip-top-half 0.2s ease-in-out forwards;
+ .char-top-half.flippingTop {
+    animation: flip-top-half 0.1s ease-in-out forwards;
 }
 
-.flipboard-char.flippingBottom .char-bottom-half {
-    animation: flip-bottom-half 0.2s ease-in-out forwards;
+.char-bottom-half.flippintBottom {
+    animation: flip-bottom-half 0.1s ease-in-out forwards;
 }
 
 @keyframes flip-top-half {
     0% {
         transform: rotateX(0deg);
-    
+
     }
 
     25% {
         transform: rotateX(-45deg);
-      
+
     }
 
     50% {
         transform: rotateX(-80deg);
-    
+
     }
 
     75% {
         transform: rotateX(-85deg);
-     
+
     }
 
     100% {
         transform: rotateX(-90deg);
- 
+
     }
 }
 
 @keyframes flip-bottom-half {
     0% {
         transform: rotateX(90deg);
-     
+
     }
 
     100% {
         transform: rotateX(0deg);
-      
+
     }
 }

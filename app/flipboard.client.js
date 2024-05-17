@@ -38,42 +38,69 @@ const Flipboard = ({ text }) => {
   };
 
 
-  // Function to create flip effect by changing characters over time
   const flipText = (inputText) => {
-    let delay = 100; // Adjust the delay as needed (e.g., 50 milliseconds)
-    let totalDuration = inputText.replace(/[^A-Za-z]/g, '').length * delay;
-  
+    const baseDelay = 70; // Adjust the base delay as needed (e.g., 300 milliseconds)
+    const maxRandomDelay = 40; // Maximum random delay in milliseconds
+
+    const getRandomDelay = () => Math.random() * maxRandomDelay;
+
+    let totalDuration = inputText.replace(/[^A-Za-z]/g, '').length * (baseDelay + maxRandomDelay);
+
+    const animateCharacter = (char, index, steps) => {
+      let stepIndex = 0;
+      const animateStep = () => {
+        const stepChar = steps[stepIndex];
+        const nextChar = steps[stepIndex + 1] || char;
+        const randomDelay = getRandomDelay();
+        setFlippedText((prevText) => {
+          const newText = [...prevText];
+          newText[index] = {
+            char: <Step char={stepChar} />,
+            nextChar: <Step char={nextChar} />,
+            flippingTop: true,
+            flippingBottom: true,
+          };
+          return newText;
+        });
+        setTimeout(() => {
+          setFlippedText((prevText) => {
+            const newText = [...prevText];
+            newText[index] = {
+              char: stepChar,
+              nextChar: nextChar,
+              flippingTop: false,
+              flippingBottom: false,
+            };
+            return newText;
+          });
+          stepIndex++;
+          if (stepIndex < steps.length) {
+            setTimeout(animateStep, baseDelay + randomDelay);
+          }
+        }, baseDelay + randomDelay);
+      };
+      animateStep();
+    };
+
     inputText.split('').forEach((char, index) => {
       if (!char.match(/[A-Za-z]/)) {
         setFlippedText((prevText) => {
           const newText = [...prevText];
-          newText[index] = { char: char === '\u00A0' ? ' ' : char, nextChar: char === '\u00A0' ? ' ' : char, flippingTop: false, flippingBottom: false };
+          newText[index] = {
+            char: char === '\u00A0' ? ' ' : char,
+            nextChar: char === '\u00A0' ? ' ' : char,
+            flippingTop: false,
+            flippingBottom: false,
+          };
           return newText;
         });
       } else {
         const steps = generateSteps('A', char);
-        steps.forEach((stepChar, stepIndex, stepArray) => {
-          const nextChar = stepArray[stepIndex + 1] || stepChar; // Define nextChar here
-          setTimeout(() => {
-            setFlippedText((prevText) => {
-              const newText = [...prevText];
-              newText[index] = { char: <Step char={stepChar} />, nextChar: <Step char={nextChar} />, flippingTop: true, flippingBottom: true };
-              return newText;
-            });
-            setTimeout(() => {
-              setFlippedText((prevText) => {
-                const newText = [...prevText];
-                newText[index] = { char: stepChar, nextChar: nextChar, flippingTop: false, flippingBottom: false };
-                return newText;
-              });
-            }, delay);
-          }, index * totalDuration + (stepIndex * totalDuration) / steps.length );
-        });
+        animateCharacter(char, index, steps);
       }
     });
   };
-  
-  
+
 
 
   useEffect(() => {
@@ -84,14 +111,14 @@ const Flipboard = ({ text }) => {
 
   return (
     <div className="flipboard">
-    {flippedText.map((item, index) => (
-      <span key={item.key} className="flipboard-char">
-        <span className={`char-top-half ${item.flippingTop ? 'flippingTop' : ''}`}>{item.char || '\u00A0'}</span>
-        <span className={`char-bottom-half ${item.flippingBottom ? 'flippingBottom' : ''}`}>{item.nextChar || '\u00A0'}</span>
-      </span>
-    ))}
-  </div>
-  
+      {flippedText.map((item, index) => (
+        <span key={item.key} className="flipboard-char">
+          <span className={`char-top-half ${item.flippingTop ? 'flippingTop' : ''}`}>{item.char || '\u00A0'}</span>
+          <span className={`char-bottom-half ${item.flippingBottom ? 'flippingBottom' : ''}`}>{item.nextChar || '\u00A0'}</span>
+        </span>
+      ))}
+    </div>
+
   );
 
 
