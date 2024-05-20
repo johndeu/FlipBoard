@@ -36,6 +36,7 @@ const playFlipSound = () => {
 const Flipboard = ({ text }) => {
   const [inputText, setInputText] = useState('');
   const [flippedText, setFlippedText] = useState(Array(text.length).fill({ char: '', flipping: false }));
+  const [prevInputText, setPrevInputText] = useState('');
 
   // Generate a unique key combining timestamp and a random number
   const generateUniqueKey = () => {
@@ -50,27 +51,27 @@ const Flipboard = ({ text }) => {
     const steps = [];
     let currentCharCode = startChar.charCodeAt(0);
     const endCharCode = endChar.charCodeAt(0);
-
-    while (currentCharCode <= endCharCode) {
+  
+    const stepDirection = currentCharCode <= endCharCode ? 1 : -1;
+  
+    while (currentCharCode !== endCharCode + stepDirection) {
       if (currentCharCode === 32) {
         steps.push('\u00A0'); // Add non-breaking space
-      } else{
+      } else {
         steps.push(String.fromCharCode(currentCharCode));
       }
-      currentCharCode += 1;
+      currentCharCode += stepDirection;
     }
-
+  
     return steps;
   };
+  
 
 
   const flipText = (inputText) => {
     const baseDelay = 30; // Adjust the base delay as needed (e.g., 300 milliseconds)
     const maxRandomDelay = 40; // Maximum random delay in milliseconds
-
     const getRandomDelay = () => Math.random() * maxRandomDelay;
-
-    let totalDuration = inputText.replace(/[^A-Za-z]/g, '').length * (baseDelay + maxRandomDelay);
 
     const animateCharacter = (char, index, steps) => {
       let stepIndex = 0;
@@ -137,13 +138,74 @@ const Flipboard = ({ text }) => {
     });
   };
 
+  const animateCharacter = (char, index, steps) => {
+    let stepIndex = 0;
+    const baseDelay = 30; // Adjust the base delay as needed (e.g., 300 milliseconds)
+    const maxRandomDelay = 40; // Maximum random delay in milliseconds
+    const getRandomDelay = () => Math.random() * maxRandomDelay;
+  
+    const animateStep = () => {
+      const stepChar = steps[stepIndex];
+      const nextChar = steps[stepIndex + 1] || char;
+      const randomDelay = getRandomDelay();
+  
+      setFlippedText((prevText) => {
+        const newText = [...prevText];
+        newText[index] = {
+          char: <Step char={stepChar === '\u00A0' ? ' ' : stepChar} />,
+          nextChar: <Step char={nextChar === '\u00A0' ? ' ' : nextChar} />,
+          flippingTop: true,
+          flippingBottom: true,
+        };
+        return newText;
+      });
+  
+      setTimeout(() => {
+        setFlippedText((prevText) => {
+          const newText = [...prevText];
+          newText[index] = {
+            char: stepChar === '\u00A0' ? ' ' : stepChar,
+            nextChar: nextChar === '\u00A0' ? ' ' : nextChar,
+            flippingTop: false,
+            flippingBottom: false,
+          };
+          return newText;
+        });
+  
+        stepIndex++;
+        if (stepIndex < steps.length) {
+          setTimeout(animateStep, baseDelay + randomDelay);
+          playFlipSound();
+        }
+      }, baseDelay + randomDelay);
+    };
+  
+    animateStep();
+  };
+  
 
+useEffect(() => {
+  if (inputText !== prevInputText) {
+    const changedIndexes = inputText.split('').reduce((acc, char, index) => {
+      if (char !== prevInputText[index]) {
+        acc.push(index);
+      }
+      return acc;
+    }, []);
 
-  useEffect(() => {
-    // Initialize flippedText with the entire input text
-    setFlippedText(inputText.split('').map((char, index) => ({ char: ' ', flippingTop: false, flippingBottom: false, key: generateUniqueKey() })));
-    flipText(inputText);
-  }, [inputText]);
+    changedIndexes.forEach((index) => {
+      // Handle animation for the changed character at index
+      const char = inputText[index];
+      const prevChar = prevInputText[index];
+      const steps = generateSteps(prevChar || '!', char);
+      console.log(steps);
+      animateCharacter(char, index, steps);
+    });
+
+    setPrevInputText(inputText);
+    console.log(inputText);
+  }
+}, [inputText, prevInputText]);
 
 
 
