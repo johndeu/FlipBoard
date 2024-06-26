@@ -1,12 +1,14 @@
 .flipboard {
     display: flex;
     flex-direction: row;
-    font-size: 5em;
+   
+    font-size: 4em;
     justify-content: flex-start;
-    align-items: center; /* Center the characters vertically */
+    align-items: center;
+    /* Center the characters vertically */
 }
 
-input.inputText{
+input.inputText {
     font-size: 2em;
     background-color: black;
     color: white;
@@ -14,15 +16,18 @@ input.inputText{
 
 .flipboard-char {
     position: relative;
-    width: 1em; /* Fixed width for uniformity */
-    height: 1.2em; /* Adjust height as needed for visual balance */
+    width: 1em;
+    /* Fixed width for uniformity */
+    height: 1.2em;
+    /* Adjust height as needed for visual balance */
     overflow: hidden;
     perspective: 500px;
-    display:inline-flexbox;
+    display: inline-flexbox;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-right: 0.02em; /* Adjust spacing between characters */
+    margin-right: 0.02em;
+    /* Adjust spacing between characters */
 }
 
 .char-top-half {
@@ -51,7 +56,7 @@ input.inputText{
     -webkit-clip-path: polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%);
     clip-path: polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%);
     backface-visibility: hidden;
-    z-index:1;
+    z-index: 1;
     background-color: black;
 }
 
@@ -59,7 +64,7 @@ input.inputText{
     animation: flip-top-half 0.2s ease-in-out forwards;
 }
 
-.char-bottom-half.flippingMiddle{
+.char-bottom-half.flippingMiddle {
     animation: flip-bottom-half .35 ease-in;
 }
 
@@ -70,23 +75,31 @@ input.inputText{
 @keyframes flip-top-half {
     0% {
         transform: rotateX(0deg);
-        background-color: rgb(0, 0, 0); /* Debug color */
+        background-color: rgb(0, 0, 0);
+        /* Debug color */
     }
+
     25% {
         transform: rotateX(-45deg);
-        color:rgb(132, 132, 132);
-        background-color: rgb(52, 52, 52); /* Debug color */
+        color: rgb(132, 132, 132);
+        background-color: rgb(52, 52, 52);
+        /* Debug color */
     }
+
     50% {
         transform: rotateX(-80deg);
-        color:rgb(80, 80, 80);
-        background-color: rgb(39, 39, 39); /* Debug color */
+        color: rgb(80, 80, 80);
+        background-color: rgb(39, 39, 39);
+        /* Debug color */
     }
+
     75% {
         transform: rotateX(-85deg);
-        color:rgb(122, 122, 122);
-        background-color: rgb(20, 20, 20); /* Debug color */
+        color: rgb(122, 122, 122);
+        background-color: rgb(20, 20, 20);
+        /* Debug color */
     }
+
     100% {
         transform: rotateX(-90deg);
     }
@@ -95,43 +108,57 @@ input.inputText{
 @keyframes flip-bottom-half {
     0% {
         transform: rotateX(90deg);
-        background-color: rgb(0, 0, 0); /* Debug color */
+        background-color: rgb(0, 0, 0);
+        /* Debug color */
         color: black;
     }
+
     25% {
         transform: rotateX(90deg);
-        background-color: rgb(21, 21, 21); /* Debug color */
+        background-color: rgb(21, 21, 21);
+        /* Debug color */
         color: rgb(61, 61, 61);
     }
+
     50% {
         transform: rotateX(25deg);
-        background-color: rgb(33, 33, 33); /* Debug color */
+        background-color: rgb(33, 33, 33);
+        /* Debug color */
         color: rgb(78, 78, 78);
     }
+
     75% {
         transform: rotateX(-25deg);
-        background-color: rgb(0, 0, 0); /* Debug color */
+        background-color: rgb(0, 0, 0);
+        /* Debug color */
         color: rgb(26, 26, 26);
     }
+
     85% {
         transform: rotateX(10deg);
-        background-color: rgb(39, 39, 39); /* Debug color */
+        background-color: rgb(39, 39, 39);
+        /* Debug color */
         color: rgb(45, 45, 45);
     }
+
     90% {
         transform: rotateX(-10deg);
-        background-color: rgb(0, 0, 0); /* Debug color */
+        background-color: rgb(0, 0, 0);
+        /* Debug color */
         color: rgb(19, 19, 19);
     }
+
     95% {
         transform: rotateX(15deg);
-        background-color: rgb(16, 16, 16); /* Debug color */
+        background-color: rgb(16, 16, 16);
+        /* Debug color */
         color: rgb(47, 47, 47);
     }
+
     100% {
         transform: rotateX(-15deg);
-        background-color: black; /* Debug color */
+        background-color: black;
+        /* Debug color */
         color: white;
     }
 }
-

@@ -3,6 +3,17 @@ import React, { memo, useState, useEffect } from 'react';
 
 import './FlipBoard.css';
 
+
+const specialCharacters = {
+  '@R': '🟥', // Red card
+  '@G': '🟩', // Green card
+  '@W': '⬜', // White card
+};
+
+const allowedChars = '⬜🟩🟥!?.@$0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#%^&*()_-+={[}]|\:;"<,>/~`';
+const coloredCards = Object.values(specialCharacters); // Red, green, and white cards
+
+
 const Step = memo(({ char }) => <span>{char}</span>);
 
 class AudioPool {
@@ -11,9 +22,9 @@ class AudioPool {
     this.currentIndex = 0;
 
     for (let i = 0; i < size; i++) {
-      const audio = new Audio(src);
-      audio.preload = 'auto';
-      this.pool.push(audio);
+      // const audio = new Audio(src);
+      // audio.preload = 'auto';
+      // this.pool.push(audio);
     }
   }
 
@@ -47,22 +58,40 @@ const Flipboard = ({ text }) => {
     return `${timestamp}-${randomNum}`;
   };
 
+  // Function to preprocess input text and replace special character codes
+  // Preprocess input to replace special character codes with their corresponding emojis
+  // Preprocess input to replace special character codes with their corresponding emojis
+  const preprocessInputString = (input) => {
+    return input.replace(/@R|@G|@W/g, (match) => specialCharacters[match] || match);
+  };
+
 
   // Function to generate intermediate steps between two characters
   const generateSteps = (startChar, endChar) => {
     const steps = [];
-    let currentCharCode = startChar.charCodeAt(0);
-    const endCharCode = endChar.charCodeAt(0);
 
-    const stepDirection = currentCharCode <= endCharCode ? 1 : -1;
+    // If startChar is a special character, handle it separately
+    if (Object.values(specialCharacters).includes(startChar)) {
+      steps.push(startChar);
+      return steps; // Return early since we don't need intermediate steps for special characters
+    }
 
-    while (currentCharCode !== endCharCode + stepDirection) {
-      if (currentCharCode === 32) {
-        steps.push('\u00A0'); // Add non-breaking space
-      } else {
-        steps.push(String.fromCharCode(currentCharCode));
-      }
-      currentCharCode += stepDirection;
+    // If endChar is a special character, handle it separately
+    if (Object.values(specialCharacters).includes(endChar)) {
+      steps.push(endChar);
+      return steps; // Return early since we don't need intermediate steps for special characters
+    }
+
+    let startIndex = allowedChars.indexOf(startChar);
+    let endIndex = allowedChars.indexOf(endChar);
+
+    // If either character is not in allowedChars, return early
+    if (startIndex === -1 || endIndex === -1) return steps;
+
+    const stepDirection = startIndex <= endIndex ? 1 : -1;
+
+    for (let i = startIndex; stepDirection > 0 ? i <= endIndex : i >= endIndex; i += stepDirection) {
+      steps.push(allowedChars[i]);
     }
 
     return steps;
@@ -121,30 +150,32 @@ const Flipboard = ({ text }) => {
     setIsAnimating(false);
   };
 
-
-
   useEffect(() => {
     if (inputText !== prevInputText) {
-      const changedIndexes = inputText.split('').reduce((acc, char, index) => {
-        if (char !== prevInputText[index]) {
+      // Preprocess the input text before further processing
+      const processedInputText = preprocessInputString(inputText);
+      const processedPrevInputText = preprocessInputString(prevInputText);
+  
+      // Determine the changed indexes between the current and previous input text
+      const changedIndexes = processedInputText.split('').reduce((acc, char, index) => {
+        if (char !== processedPrevInputText[index]) {
           acc.push(index);
         }
         return acc;
       }, []);
-
+  
+      // Handle animations for the changed characters
       changedIndexes.forEach((index) => {
-        // Handle animation for the changed character at index
-        const char = inputText[index];
-        const prevChar = prevInputText[index];
+        const char = processedInputText[index];
+        const prevChar = processedPrevInputText[index];
         const steps = generateSteps(prevChar || '!', char);
-        console.log(steps);
         animateCharacter(char, index, steps);
       });
-
+  
       // Clear the screen by removing characters for removed characters
-      if (inputText.length < prevInputText.length) {
+      if (processedInputText.length < processedPrevInputText.length) {
         const newFlippedText = flippedText.map((item, index) => {
-          if (index < inputText.length) {
+          if (index < processedInputText.length) {
             return { ...item }; // Keep existing characters before the new input length
           } else {
             return {
@@ -156,11 +187,13 @@ const Flipboard = ({ text }) => {
         });
         setFlippedText(newFlippedText);
       }
-
+  
+      // Update the previous input text
       setPrevInputText(inputText);
-      console.log(inputText);
+      console.log(processedInputText);
     }
   }, [inputText, prevInputText]);
+
 
 
 
