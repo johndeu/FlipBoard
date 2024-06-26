@@ -10,8 +10,9 @@
 
 input.inputText {
     font-size: 2em;
-    background-color: black;
+    background-color: darkgray;
     color: white;
+    padding:5px;
 }
 
 .flipboard-char {
