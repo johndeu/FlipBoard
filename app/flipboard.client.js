@@ -22,9 +22,9 @@ class AudioPool {
     this.currentIndex = 0;
 
     for (let i = 0; i < size; i++) {
-      // const audio = new Audio(src);
-      // audio.preload = 'auto';
-      // this.pool.push(audio);
+      const audio = new Audio(src);
+      audio.preload = 'auto';
+      this.pool.push(audio);
     }
   }
 
